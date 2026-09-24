@@ -14,7 +14,16 @@
     .status { margin-left: auto; color: #777777; font-size: 12px; }
     .document { width: min(850px, calc(100% - 32px)); min-height: calc(100vh - 104px); margin: 20px auto 40px; padding: 72px 82px; background: #ffffff; box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12); }
     #editor { min-height: 900px; font-family: "Times New Roman", Times, serif; font-size: 16px; line-height: 1.7; white-space: pre-wrap; }
-    #editor:empty::before { content: "Le contenu de ton kjhk  mémoire apparaîtra ici."; color: #aaaaaa; }
+    #editor:empty::before { content: "Le contenu de ton mémoire apparaîtra ici."; color: #aaaaaa; }
+    .chapter-label { margin: 0 0 34px; color: #667085; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; }
+    .chapter h1 { margin: 0 0 28px; color: #1f3a5f; font-size: 30px; font-weight: 700; line-height: 1.2; }
+    .chapter h2 { margin: 30px 0 8px; color: #294f78; font-size: 20px; line-height: 1.35; }
+    .chapter p { margin: 10px 0; }
+    .chapter .formula { margin: 16px 0; padding: 12px 16px; color: #294f78; background: #f4f7fa; border-left: 3px solid #4472c4; text-align: center; }
+    .chapter pre { overflow-x: auto; margin: 14px 0 18px; padding: 16px 18px; color: #e8edf3; background: #263746; border-radius: 4px; font: 14px/1.55 "Courier New", Courier, monospace; white-space: pre; }
+    .chapter code { color: #244e75; font-family: "Courier New", Courier, monospace; font-size: 0.92em; }
+    .chapter pre code { color: inherit; font-size: inherit; }
+    .chapter ul { margin: 10px 0 0; padding-left: 24px; }
     .search-result { background: #fff2a8; }
     @media (max-width: 600px) {
       .topbar { height: auto; flex-wrap: wrap; padding: 14px 16px; }
@@ -33,7 +42,71 @@
     <div class="status" id="status">Enregistré</div>
   </header>
   <main class="document">
-    <div id="editor" aria-label="Document du mémoire"></div>
+    <div id="editor" aria-label="Document du mémoire">
+      <article class="chapter">
+      <p class="chapter-label">PARTIE DOCUMENTATION - TERMINALE NSI</p>
+      <h1>1. Récursivité</h1>
+
+      <h2>1.1. Définition</h2>
+      <p>Une fonction récursive est une fonction qui s'appelle elle-même pour résoudre un problème. Elle décompose le problème en sous-problèmes de plus en plus petits, jusqu'à atteindre un cas qui peut être résolu directement.</p>
+
+      <h2>1.2. Exemple classique : la factorielle</h2>
+      <p>La factorielle d'un entier naturel <em>n</em>, notée <em>n!</em>, est définie par :</p>
+      <p class="formula">0! = 1 et n! = n × (n - 1)! pour n &gt; 0</p>
+      <pre><code>def factorielle(n):
+    if n == 0:              # cas de base
+      return 1
+    return n * factorielle(n - 1)  # appel récursif</code></pre>
+      <p>Ainsi, <code>factorielle(4)</code> calcule <code>4 × 3 × 2 × 1</code> et renvoie <code>24</code>.</p>
+
+      <h2>1.3. Condition d'arrêt</h2>
+      <p>Toute fonction récursive doit posséder un <strong>cas de base</strong>, c'est-à-dire une condition qui arrête les appels récursifs. Sans cette condition, la fonction s'appelle indéfiniment et provoque une erreur lorsque la profondeur maximale de récursion est atteinte.</p>
+
+      <h2>1.4. Pile d'appels</h2>
+      <p>Chaque appel de fonction est placé dans une pile d'appels. Les appels sont retirés dans l'ordre inverse de leur arrivée : le dernier appel effectué est le premier à se terminer.</p>
+      <p>Pour <code>factorielle(3)</code>, la pile évolue ainsi :</p>
+      <pre><code>factorielle(3)
+    → 3 * factorielle(2)
+      → 2 * factorielle(1)
+        → 1 * factorielle(0)
+          → 1
+        → 1
+      → 2
+    → 6</code></pre>
+
+      <h2>1.5. Récursivité et itération</h2>
+      <p>Un problème récursif peut souvent être résolu avec une boucle. La version itérative utilise généralement moins de mémoire, tandis que la version récursive peut être plus simple à comprendre lorsque le problème est naturellement composé de sous-problèmes.</p>
+      <pre><code>def factorielle_iterative(n):
+    resultat = 1
+    for valeur in range(2, n + 1):
+      resultat *= valeur
+    return resultat</code></pre>
+
+      <h2>1.6. Exemple : suite de Fibonacci</h2>
+      <p>La suite de Fibonacci est définie par <code>F(0) = 0</code>, <code>F(1) = 1</code> et <code>F(n) = F(n - 1) + F(n - 2)</code>.</p>
+      <pre><code>def fibonacci(n):
+    if n &lt;= 1:
+      return n
+    return fibonacci(n - 1) + fibonacci(n - 2)</code></pre>
+      <p>Cette version effectue plusieurs fois les mêmes calculs. Sa complexité est exponentielle. La mémorisation permet de conserver les résultats déjà calculés :</p>
+      <pre><code>def fibonacci_memo(n, memo=None):
+    if memo is None:
+      memo = {}
+    if n &lt;= 1:
+      return n
+    if n not in memo:
+      memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)
+    return memo[n]</code></pre>
+
+      <h2>1.7. Bilan</h2>
+      <ul>
+        <li>Une fonction récursive contient au moins un cas de base et un appel récursif.</li>
+        <li>La pile d'appels mémorise les fonctions en attente de terminaison.</li>
+        <li>La récursivité est adaptée aux structures naturellement imbriquées, comme les arbres.</li>
+        <li>La mémorisation évite de recalculer plusieurs fois les mêmes résultats.</li>
+      </ul>
+      </article>
+    </div>
   </main>
   <script>
     const editor = document.querySelector("#editor");
