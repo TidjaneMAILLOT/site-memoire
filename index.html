@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon mémoire</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #202020; background: #eeeeee; font-family: Arial, Helvetica, sans-serif; }
+    .topbar { display: flex; align-items: center; gap: 18px; height: 64px; padding: 0 28px; background: #ffffff; border-bottom: 1px solid #d7d7d7; }
+    .title { min-width: 190px; color: #333333; font-size: 18px; font-weight: 600; }
+    .search { width: min(360px, 100%); padding: 10px 14px; border: 1px solid #cfcfcf; border-radius: 4px; outline: none; font: 14px Arial, sans-serif; }
+    .search:focus { border-color: #4472c4; box-shadow: 0 0 0 2px #dbe6f7; }
+    .status { margin-left: auto; color: #777777; font-size: 12px; }
+    .document { width: min(850px, calc(100% - 32px)); min-height: calc(100vh - 104px); margin: 20px auto 40px; padding: 72px 82px; background: #ffffff; box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12); }
+    #editor { min-height: 900px; font-family: "Times New Roman", Times, serif; font-size: 16px; line-height: 1.7; white-space: pre-wrap; }
+    #editor:empty::before { content: "Le contenu de ton mémoire apparaîtra ici."; color: #aaaaaa; }
+    .search-result { background: #fff2a8; }
+    @media (max-width: 600px) {
+      .topbar { height: auto; flex-wrap: wrap; padding: 14px 16px; }
+      .title { min-width: auto; }
+      .search { order: 3; width: 100%; }
+      .status { margin-left: auto; }
+      .document { width: calc(100% - 20px); margin-top: 10px; padding: 40px 24px; }
+      #editor { min-height: 700px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="title">Mon mémoire</div>
+    <input class="search" id="search" type="search" placeholder="Rechercher un mot..." aria-label="Rechercher dans le mémoire">
+    <div class="status" id="status">Enregistré</div>
+  </header>
+  <main class="document">
+    <div id="editor" aria-label="Document du mémoire"></div>
+  </main>
+  <script>
+    const editor = document.querySelector("#editor");
+    const search = document.querySelector("#search");
+    const status = document.querySelector("#status");
+    const savedText = localStorage.getItem("memoire-document");
+    if (savedText) editor.innerHTML = savedText;
+
+    search.addEventListener("input", () => {
+      const phrase = search.value.trim();
+      document.querySelectorAll(".search-result").forEach(item => item.outerHTML = item.textContent);
+      if (!phrase) return;
+      const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      editor.innerHTML = editor.innerHTML.replace(new RegExp(`(${escaped})`, "gi"), '<mark class="search-result">$1</mark>');
+    });
+  </script>
+</body>
+</html>
